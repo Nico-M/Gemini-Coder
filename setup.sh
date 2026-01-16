@@ -79,9 +79,12 @@ write_step "Step 3: Registering MCP server..."
 # Try to remove existing ccg MCP server if it exists
 gemini mcp remove ccg 2>/dev/null && write_warning "Removed existing ccg MCP server" || true
 
-# Add CCG MCP server (Local Source, Global Scope)
-if gemini mcp add ccg --scope user uv --directory "$SCRIPT_DIR" run ccg-mcp; then
-    write_success "MCP server registered globally (Local Source)"
+# Add CCG MCP server (Remote Source via uvx)
+# Using the online repository ensures you're running the latest version without local dependency issues
+REPO_URL="https://github.com/Nico-M/Gemini-Coder.git"
+
+if gemini mcp add ccg --scope user uvx --from "git+$REPO_URL" ccg-mcp; then
+    write_success "MCP server registered globally (Remote Source: $REPO_URL)"
 else
     write_error "Failed to register MCP server"
     exit 1
